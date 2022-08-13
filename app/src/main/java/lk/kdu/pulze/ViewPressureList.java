@@ -18,81 +18,85 @@ import lk.kdu.pulze.model.PressureModel;
 
 public class ViewPressureList extends AppCompatActivity {
 
-    ListView pressuresListView;
-    DatabaseHelper databaseHelper;
-    LineChart lineChart;
-    private ArrayList<PressureModel> pressureModelArrayList;
-    private PressureListAdapter customAdapter;
-    private CoordinatorLayout listCoordinator;
+  ListView pressuresListView;
+  DatabaseHelper databaseHelper;
+  LineChart lineChart;
+  private ArrayList<PressureModel> pressureModelArrayList;
+  private PressureListAdapter customAdapter;
+  private CoordinatorLayout listCoordinator;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_pressure_layout);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_view_pressure_layout);
 
-        listCoordinator = findViewById(R.id.list_coordinator);
+    listCoordinator = findViewById(R.id.list_coordinator);
 
-        pressuresListView = findViewById(R.id.pressuresListView);
+    pressuresListView = findViewById(R.id.pressuresListView);
 
-        lineChart = findViewById(R.id.activity_main_lineChart);
+    lineChart = findViewById(R.id.activity_main_lineChart);
 
-        databaseHelper = new DatabaseHelper(this);
+    databaseHelper = new DatabaseHelper(this);
 
-        pressureModelArrayList = databaseHelper.getPressure();
+    pressureModelArrayList = databaseHelper.getPressure();
 
-        customAdapter = new PressureListAdapter(this, pressureModelArrayList);
-        pressuresListView.setAdapter(customAdapter);
-        customAdapter.notifyDataSetChanged();
+    customAdapter = new PressureListAdapter(this, pressureModelArrayList);
+    pressuresListView.setAdapter(customAdapter);
+    customAdapter.notifyDataSetChanged();
 
-
-        pressuresListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Snackbar.make(listCoordinator, String.valueOf(position), Snackbar.LENGTH_LONG).show();
-            }
+    pressuresListView.setOnItemClickListener(
+        new AdapterView.OnItemClickListener() {
+          @Override
+          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Snackbar.make(listCoordinator, String.valueOf(position), Snackbar.LENGTH_LONG).show();
+          }
         });
 
-        pressuresListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg, View v, int pos, long id) {
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(ViewPressureList.this);
-                builder.setTitle("Delete Record");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        PressureModel item = (PressureModel) pressureModelArrayList.get(pos);
-                        databaseHelper.deletePressure(item.getId());
-                        refreshListView();
-                    }
+    pressuresListView.setOnItemLongClickListener(
+        new AdapterView.OnItemLongClickListener() {
+          @Override
+          public boolean onItemLongClick(AdapterView<?> arg, View v, int pos, long id) {
+            MaterialAlertDialogBuilder builder =
+                new MaterialAlertDialogBuilder(ViewPressureList.this);
+            builder.setTitle("Delete Record");
+            builder.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                    PressureModel item = (PressureModel) pressureModelArrayList.get(pos);
+                    databaseHelper.deletePressure(item.getId());
+                    refreshListView();
+                  }
                 });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //..
-                    }
+            builder.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                    // ..
+                  }
                 });
-                builder.setIcon(R.drawable.ic_baseline_info_24);
-                builder.setMessage("Are you sure you wanna delete?");
-                builder.show();
-                return true;
-            }
+            builder.setIcon(R.drawable.ic_baseline_info_24);
+            builder.setMessage("Are you sure you wanna delete?");
+            builder.show();
+            return true;
+          }
         });
+  }
 
+  private void refreshListView() {
+    pressureModelArrayList.clear();
+    pressureModelArrayList.addAll(databaseHelper.getPressure());
+    customAdapter.notifyDataSetChanged();
+    pressuresListView.invalidateViews();
+    pressuresListView.refreshDrawableState();
+  }
 
-    }
-
-    private void refreshListView() {
-        pressureModelArrayList.clear();
-        pressureModelArrayList.addAll(databaseHelper.getPressure());
-        customAdapter.notifyDataSetChanged();
-        pressuresListView.invalidateViews();
-        pressuresListView.refreshDrawableState();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-        startActivity(new Intent(ViewPressureList.this, MainActivity.class));
-    }
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    finish();
+    startActivity(new Intent(ViewPressureList.this, MainActivity.class));
+  }
 }

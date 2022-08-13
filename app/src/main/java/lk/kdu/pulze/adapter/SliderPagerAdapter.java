@@ -7,18 +7,18 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import lk.kdu.pulze.SliderItemFragment;
 
 public class SliderPagerAdapter extends FragmentPagerAdapter {
-    public SliderPagerAdapter(@NonNull FragmentManager fm, int behavior) {
-        super(fm, behavior);
-    }
+  public SliderPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+    super(fm, behavior);
+  }
 
-    @NonNull
-    @Override
-    public Fragment getItem(int position) {
-        return SliderItemFragment.newInstance(position);
-    }
+  @NonNull
+  @Override
+  public Fragment getItem(int position) {
+    return SliderItemFragment.newInstance(position);
+  }
 
-    @Override
-    public int getCount() {
-        return 4;
-    }
+  @Override
+  public int getCount() {
+    return 4;
+  }
 }
